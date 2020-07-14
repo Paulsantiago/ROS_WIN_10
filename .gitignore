@@ -4,10 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # User-specific files
-<<<<<<< HEAD
 *.rsuser
-=======
->>>>>>> d76f4ab... ADD THE INIT MCCL
 *.suo
 *.user
 *.userosscache
@@ -16,12 +13,9 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
-<<<<<<< HEAD
 # Mono auto generated files
 mono_crash.*
 
-=======
->>>>>>> d76f4ab... ADD THE INIT MCCL
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -29,19 +23,13 @@ mono_crash.*
 [Rr]eleases/
 x64/
 x86/
-<<<<<<< HEAD
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
-=======
->>>>>>> d76f4ab... ADD THE INIT MCCL
 bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
-<<<<<<< HEAD
 [Ll]ogs/
-=======
->>>>>>> d76f4ab... ADD THE INIT MCCL
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -55,16 +43,10 @@ Generated\ Files/
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
 
-<<<<<<< HEAD
 # NUnit
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
-=======
-# NUNIT
-*.VisualState.xml
-TestResult.xml
->>>>>>> d76f4ab... ADD THE INIT MCCL
 
 # Build Results of an ATL Project
 [Dd]ebugPS/
@@ -78,10 +60,6 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
-<<<<<<< HEAD
-=======
-**/Properties/launchSettings.json
->>>>>>> d76f4ab... ADD THE INIT MCCL
 
 # StyleCop
 StyleCopReport.xml
@@ -89,11 +67,7 @@ StyleCopReport.xml
 # Files built by Visual Studio
 *_i.c
 *_p.c
-<<<<<<< HEAD
 *_h.h
-=======
-*_i.h
->>>>>>> d76f4ab... ADD THE INIT MCCL
 *.ilk
 *.meta
 *.obj
@@ -110,10 +84,7 @@ StyleCopReport.xml
 *.tlh
 *.tmp
 *.tmp_proj
-<<<<<<< HEAD
 *_wpftmp.csproj
-=======
->>>>>>> d76f4ab... ADD THE INIT MCCL
 *.log
 *.vspscc
 *.vssscc
@@ -156,12 +127,6 @@ _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
 
-<<<<<<< HEAD
-=======
-# JustCode is a .NET coding add-in
-.JustCode
-
->>>>>>> d76f4ab... ADD THE INIT MCCL
 # TeamCity is a build add-in
 _TeamCity*
 
@@ -219,11 +184,8 @@ PublishScripts/
 
 # NuGet Packages
 *.nupkg
-<<<<<<< HEAD
 # NuGet Symbol Packages
 *.snupkg
-=======
->>>>>>> d76f4ab... ADD THE INIT MCCL
 # The packages folder can be ignored because of Package Restore
 **/[Pp]ackages/*
 # except build/, which is used as an MSBuild target.
@@ -248,21 +210,14 @@ BundleArtifacts/
 Package.StoreAssociation.xml
 _pkginfo.txt
 *.appx
-<<<<<<< HEAD
 *.appxbundle
 *.appxupload
-=======
->>>>>>> d76f4ab... ADD THE INIT MCCL
 
 # Visual Studio cache files
 # files ending in .cache can be ignored
 *.[Cc]ache
 # but keep track of directories ending in .cache
-<<<<<<< HEAD
 !?*.[Cc]ache/
-=======
-!*.[Cc]ache/
->>>>>>> d76f4ab... ADD THE INIT MCCL
 
 # Others
 ClientBin/
@@ -275,11 +230,7 @@ ClientBin/
 *.publishsettings
 orleans.codegen.cs
 
-<<<<<<< HEAD
 # Including strong name files can present a security risk
-=======
-# Including strong name files can present a security risk 
->>>>>>> d76f4ab... ADD THE INIT MCCL
 # (https://github.com/github/gitignore/pull/2483#issue-259490424)
 #*.snk
 
@@ -310,12 +261,9 @@ ServiceFabricBackup/
 *.bim.layout
 *.bim_*.settings
 *.rptproj.rsuser
-<<<<<<< HEAD
 *- [Bb]ackup.rdl
 *- [Bb]ackup ([0-9]).rdl
 *- [Bb]ackup ([0-9][0-9]).rdl
-=======
->>>>>>> d76f4ab... ADD THE INIT MCCL
 
 # Microsoft Fakes
 FakesAssemblies/
@@ -351,17 +299,8 @@ paket-files/
 # FAKE - F# Make
 .fake/
 
-<<<<<<< HEAD
 # CodeRush personal settings
 .cr/personal
-=======
-# JetBrains Rider
-.idea/
-*.sln.iml
-
-# CodeRush
-.cr/
->>>>>>> d76f4ab... ADD THE INIT MCCL
 
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
@@ -386,11 +325,7 @@ __pycache__/
 # OpenCover UI analysis results
 OpenCover/
 
-<<<<<<< HEAD
 # Azure Stream Analytics local run output
-=======
-# Azure Stream Analytics local run output 
->>>>>>> d76f4ab... ADD THE INIT MCCL
 ASALocalRun/
 
 # MSBuild Binary and Structured Log
@@ -399,7 +334,6 @@ ASALocalRun/
 # NVidia Nsight GPU debugger configuration file
 *.nvuser
 
-<<<<<<< HEAD
 # MFractors (Xamarin productivity tool) working folder
 .mfractor/
 
@@ -414,7 +348,3 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-=======
-# MFractors (Xamarin productivity tool) working folder 
-.mfractor/
->>>>>>> d76f4ab... ADD THE INIT MCCL
