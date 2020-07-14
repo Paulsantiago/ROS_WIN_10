@@ -11,19 +11,23 @@ find_path(MCCL_INCLUDE_DIR MCCL.h
 		
 		message(${FIND_MCCL_PATHS})
 #message("--------+++++++++++++++++++---------------")
-find_library(wdapi1230_LIBRARY             NAMES wdapi1230.dll            PATH_SUFFIXES lib            PATHS ${FIND_MCCL_PATHS}            )  
+#find_library(wdapi1230_LIBRARY             NAMES wdapi1230.dll            PATH_SUFFIXES LIBX32            PATHS ${FIND_MCCL_PATHS}            )  
 message(STATUS "The cmake FIND_MCCL_PATHS path is ${FIND_MCCL_PATHS} ")  
 find_library(MCCL_LIBRARY_lib
              NAMES MCCLPCI_IMP3
 			 PATH_SUFFIXES LIBX32
 			 PATHS ${FIND_MCCL_PATHS}
 					) 
+
+					
 find_library(IMC3Driver_lib
 NAMES IMC3Driver
 PATH_SUFFIXES LIBX32
 PATHS ${FIND_MCCL_PATHS}
 		) 
    
+
+
 #find_library(wdapi1230dll_LIB 
 #			NAMES wdapi1230
 #			PATH_SUFFIXES LIBX32
