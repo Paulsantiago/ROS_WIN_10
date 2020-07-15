@@ -128,7 +128,6 @@
 #define GMS_HOLD						2
 #define GMS_DELAYING					3
 #define GMS_BLOCKHOLD                   4
-#define GMS_MPGING                      5
 
 
 /////////////////////////////////////////////////////////////////////
@@ -298,15 +297,15 @@
 #define DAC_TRIG_ENC7	            0x00000080
 
 /////////////////////////////////////////////////////////////////////
-// LED Trigger Source Definitions
-#define LED_TRIG_ENC0             0x00000001
-#define LED_TRIG_ENC1             0x00000002
-#define LED_TRIG_ENC2             0x00000004
-#define LED_TRIG_ENC3             0x00000008
-#define LED_TRIG_ENC4             0x00000010
-#define LED_TRIG_ENC5             0x00000020
-#define LED_TRIG_ENC6             0x00000040
-#define LED_TRIG_ENC7             0x00000080
+// IO Trigger Source Definitions
+#define IO_TRIG_ENC0             0x00000001
+#define IO_TRIG_ENC1             0x00000002
+#define IO_TRIG_ENC2             0x00000004
+#define IO_TRIG_ENC3             0x00000008
+#define IO_TRIG_ENC4             0x00000010
+#define IO_TRIG_ENC5             0x00000020
+#define IO_TRIG_ENC6             0x00000040
+#define IO_TRIG_ENC7             0x00000080
 
 
 /////////////////////////////////////////////////////////////////////

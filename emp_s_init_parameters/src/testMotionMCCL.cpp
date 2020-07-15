@@ -44,7 +44,7 @@ void chatterCallback( emp_s_init_parameters::CartesianPoint msg  )
 
 int main(int argc, char **argv)
 {
-  
+  ros::Publisher line_pub ; 
 // %Tag(INIT)%
   ros::init(argc, argv, "talker");
 
@@ -54,13 +54,43 @@ int main(int argc, char **argv)
 // %Tag(PUBLISHER)% 
   ros::Publisher pos_pub = n.advertise<geometry_msgs::Pose>("SetPositionMCCL", 10);
   //ros::Subscriber get_Curpos_sub = n.subscribe("GetCurPositionMCCL", 5 , GetCurPosCallBack );
-  ros::Subscriber get_InPos_sub = n.subscribe("GetInPositionMCCL", 1000, InPositionCallback);
+  ros::Subscriber get_InPos_sub = n.subscribe("curcpos_MCCL", 1000, chatterCallback);
 
-   ros::Subscriber GET = n.subscribe("chatter", 1000, chatterCallback);
+  //ros::Subscriber GET = n.subscribe("chatter", 1000, chatterCallback);
 // %EndTag(PUBLISHER)%
 
 // %Tag(LOOP_RATE)%
   ros::Rate loop_rate(20);
+
+
+
+
+
+
+
+  line_pub = n.advertise<emp_s_init_parameters::CartesianPoint>("line_MCCL", 1, true); 
+    emp_s_init_parameters::CartesianPoint cPoint;
+    ROS_INFO("\n\n\n******START TESTING************\n");
+    cPoint.X = 10 ;
+    cPoint.Z = 10 ;
+    cPoint.RX = 0 ;
+    cPoint.RY= 0 ;
+    cPoint.RZ = 0 ;
+   // turtlesim::Pose pose;
+   // pose.x=cPoint.X;
+   // pose.y=cPoint.Y;
+   // pose.theta=0;
+
+    //line_pub.publish(cPoint);
+    //movef(cPoint);
+    line_pub.publish(cPoint);
+
+
+
+
+
+
+
 // %EndTag(LOOP_RATE)%
 
   /**
@@ -68,8 +98,8 @@ int main(int argc, char **argv)
    * a unique string for each message.
    */
 // %Tag(ROS_OK)%
-  int count = 0;
-  /*while (ros::ok())
+  /*int count = 0;
+  while (ros::ok())
   {
 
     if(InPos == 0)
@@ -77,11 +107,11 @@ int main(int argc, char **argv)
       geometry_msgs::Pose msg;
       msg.position.x = 5 * double(rand())/double(RAND_MAX);
       msg.position.y = 10 * double(rand())/double(RAND_MAX);  
-      // %Tag(ROSCONSOLE)%
-          ROS_INFO("pos x : %f", msg.position.x);
-          ROS_INFO("pos y : %f", msg.position.y);
-          pos_pub.publish(msg);
-      // %EndTag(ROSCONSOLE)%
+  // %Tag(ROSCONSOLE)%
+      ROS_INFO("pos x : %f", msg.position.x);
+      ROS_INFO("pos y : %f", msg.position.y);
+      pos_pub.publish(msg);
+  // %EndTag(ROSCONSOLE)%
     }
    
 // %Tag(PUBLISH)%

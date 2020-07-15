@@ -88,7 +88,7 @@
 #define EPCIO_4_AXIS_PCI_CARD			2
 #define EPCIO_6_AXIS_PCI_CARD			3
 #define IMP_II_8_AXIS_PCI_CARD          4
-
+#define IMP_III_8_AXIS_PCI_CARD         5
 /////////////////////////////////////////////////////////////////////
 // Unit Definitions
 
@@ -128,7 +128,6 @@
 #define GMS_HOLD						2
 #define GMS_DELAYING					3
 #define GMS_BLOCKHOLD                   4
-#define GMS_MPGING                      5
 
 
 /////////////////////////////////////////////////////////////////////
@@ -298,6 +297,17 @@
 #define DAC_TRIG_ENC7	            0x00000080
 
 /////////////////////////////////////////////////////////////////////
+// IO Trigger Source Definitions
+#define IO_TRIG_ENC0             0x00000001
+#define IO_TRIG_ENC1             0x00000002
+#define IO_TRIG_ENC2             0x00000004
+#define IO_TRIG_ENC3             0x00000008
+#define IO_TRIG_ENC4             0x00000010
+#define IO_TRIG_ENC5             0x00000020
+#define IO_TRIG_ENC6             0x00000040
+#define IO_TRIG_ENC7             0x00000080
+
+/////////////////////////////////////////////////////////////////////
 // LED Trigger Source Definitions
 #define LED_TRIG_ENC0             0x00000001
 #define LED_TRIG_ENC1             0x00000002
@@ -308,13 +318,12 @@
 #define LED_TRIG_ENC6             0x00000040
 #define LED_TRIG_ENC7             0x00000080
 
-
 /////////////////////////////////////////////////////////////////////
 // ADC Compare Type Definitions
-
-#define ADC_COMP_RISE				       0x0
-#define ADC_COMP_FALL	                   0x1
-#define ADC_COMP_LEVEL	                   0x2
+#define ADC_COMP_NONE 				       0x0
+#define ADC_COMP_RISE				       0x1
+#define ADC_COMP_FALL	                   0x2
+#define ADC_COMP_LEVEL	                   0x3
 
 
 /////////////////////////////////////////////////////////////////////
@@ -349,6 +358,40 @@
 
 
 /////////////////////////////////////////////////////////////////////
+// Remote I/O Slave Definitions
+
+#define RIO_SLAVE0                0x0
+#define RIO_SLAVE1                0x1
+#define RIO_SLAVE2                0x2
+#define RIO_SLAVE3                0x3
+#define RIO_SLAVE4                0x4
+#define RIO_SLAVE5                0x5
+#define RIO_SLAVE6                0x6
+#define RIO_SLAVE7                0x7
+#define RIO_SLAVE8                0x8
+#define RIO_SLAVE9                0x9
+#define RIO_SLAVE10               0xA
+#define RIO_SLAVE11               0xB
+#define RIO_SLAVE12               0xC
+#define RIO_SLAVE13               0xD
+#define RIO_SLAVE14               0xE
+#define RIO_SLAVE15               0xF
+#define RIO_SLAVE16               0x10
+#define RIO_SLAVE17               0x11
+#define RIO_SLAVE18               0x12
+#define RIO_SLAVE19               0x13
+#define RIO_SLAVE20               0x14
+#define RIO_SLAVE21               0x15
+#define RIO_SLAVE22               0x16
+#define RIO_SLAVE23               0x17
+#define RIO_SLAVE24               0x18
+#define RIO_SLAVE25               0x19
+#define RIO_SLAVE26               0x1A
+#define RIO_SLAVE27               0x1B
+#define RIO_SLAVE28               0x1C
+#define RIO_SLAVE29               0x1D
+#define RIO_SLAVE30               0x1E
+#define RIO_SLAVE31               0x1F
 // Remote I/O Port Definitions
 
 #define RIO_PORT0						   0x0

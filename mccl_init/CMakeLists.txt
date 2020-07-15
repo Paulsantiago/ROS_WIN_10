@@ -147,7 +147,7 @@ include_directories(include ${catkin_INCLUDE_DIRS} ${MCCL_FUNC_INCLUDE_DIR} ${MC
 
 add_executable(initMCCLParameters src/initMCCL/initParameters.cpp)
 target_link_libraries(initMCCLParameters ${catkin_LIBRARIES} ${MCCL_LIBRARY_lib} ${IMC3Driver_lib} )
-add_dependencies(initMCCLParameters mccl_init_messages_generation_cpp)
+add_dependencies(initMCCLParameters mccl_init_generate_messages_cpp)
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use

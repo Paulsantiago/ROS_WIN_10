@@ -52,14 +52,13 @@ MCC_API double MCC_CALL MCC_GetConvFactor(WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_SetReverseInterpRoutine(INTERP pfnForwardReverse, WORD wGroupIndex = 0);
 MCC_API int    MCC_CALL MCC_EnableReverseInterp(BOOL bEnableReverse, WORD wGroupIndex = 0);
 
-// Set/Get Size of Motion Command Queue
-MCC_API int    MCC_CALL MCC_SetCmdQueueSize(int nSize, WORD wGroupIndex = 0);
+// Get Size of Motion Command Queue
 MCC_API int    MCC_CALL MCC_GetCmdQueueSize(WORD wGroupIndex = 0);
 
 // Initialize/Close System
 MCC_API int    MCC_CALL MCC_InitSystem(int nInterpolateTime, SYS_CARD_CONFIG *pstCardConfig, WORD wCardNo);
 MCC_API int    MCC_CALL MCC_InitSystemEx(double dfInterpolateTime, SYS_CARD_CONFIG *pstCardConfig, WORD wCardNo);
-MCC_API int    MCC_CALL MCC_InitSimulation(int nInterpolateTime, SYS_CARD_CONFIG *pstCardConfig, WORD wCardNo);
+MCC_API int    MCC_CALL MCC_InitSimulation(double dfInterpolateTime, SYS_CARD_CONFIG *pstCardConfig, WORD wCardNo);
 MCC_API int    MCC_CALL MCC_CloseSystem();
 
 // Reset MCCL
@@ -99,6 +98,9 @@ MCC_API int    MCC_CALL MCC_DisableLIOTrigger(WORD wPoint, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_SetLedLightOn(WORD Channel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_SetLedLightOff(WORD Channel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_GetLedLightStatus(WORD Channel, WORD *Status, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_SetLedTrigOutEnable(WORD wEnable, WORD  wPoint, WORD  wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_SetLedTrigOutValue(WORD wOutput, WORD  wPoint, WORD  wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_SetLedTrigOutSource(WORD wSource, WORD  wPoint, WORD  wCardIndex = 0);
 
 MCC_API int    MCC_CALL MCC_SetLIOTrigOutValueEx(DWORD dwBitMask, DWORD dwBitValue, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_SetLIOTrigOutEnable(WORD wEnable, WORD  wPoint, WORD  wCardIndex = 0);
@@ -125,7 +127,6 @@ MCC_API int    MCC_CALL MCC_GetCoordType(WORD wGroupIndex = 0);
 MCC_API int    MCC_CALL MCC_GetCurRefPos(double *pdfX, double *pdfY, double *pdfZ, double *pdfU, double *pdfV, double *pdfW, double *pdfA, double *pdfB, WORD wGroupIndex = 0);
 MCC_API int    MCC_CALL MCC_GetCurPos(double *pdfX, double *pdfY, double *pdfZ, double *pdfU, double *pdfV, double *pdfW, double *pdfA, double *pdfB, WORD wGroupIndex = 0);
 MCC_API int    MCC_CALL MCC_GetPulsePos(long *plX, long *plY, long *plZ, long *plU, long *plV, long *plW, long *plA, long *plB, WORD wGroupIndex = 0);
-MCC_API int    MCC_CALL MCC_GetPulsePosEx(long long *plX, long long *plY, long long *plZ, long long *plU, long long *plV, long long *plW, long long *plA, long long *plB, WORD wGroupIndex = 0);
 
 // Regard here as origin
 MCC_API int    MCC_CALL MCC_DefineOrigin(WORD wAxis, WORD wGroupIndex = 0);
@@ -341,7 +342,7 @@ MCC_API int    MCC_CALL MCC_UpdateCompParam();
 // Trajectory Planning
 
 // Hold/Continue/Abort Motion
-MCC_API int    MCC_CALL MCC_HoldMotion(WORD wGroupIndex = 0, BOOL bBlockEnd = 0);
+MCC_API int    MCC_CALL MCC_HoldMotion(WORD wGroupIndex = 0);
 MCC_API int    MCC_CALL MCC_ContiMotion(WORD wGroupIndex = 0);
 MCC_API int    MCC_CALL MCC_AbortMotion(WORD wGroupIndex = 0, BOOL bBlockEnd = 0);
 MCC_API int    MCC_CALL MCC_AbortMotionEx(double dfDecTime, WORD wGroupIndex = 0);
@@ -352,8 +353,6 @@ MCC_API int    MCC_CALL MCC_DisableSingleBlock(WORD wGroupIndex = 0);
 MCC_API int    MCC_CALL MCC_RunSingleBlock(WORD wGroupIndex = 0);
 
 // Enable/Disable Motion Blending
-MCC_API int    MCC_CALL MCC_EnableBlendInstant(WORD wGroupIndex = 0);
-MCC_API int    MCC_CALL MCC_DisableBlendInstant(WORD wGroupIndex = 0); 
 MCC_API int    MCC_CALL MCC_EnableBlend(WORD wGroupIndex = 0);
 MCC_API int    MCC_CALL MCC_DisableBlend(WORD wGroupIndex = 0); 
 MCC_API int    MCC_CALL MCC_CheckBlend(WORD wGroupIndex = 0);
@@ -378,7 +377,6 @@ MCC_API int    MCC_CALL MCC_SetENCFilterClock(WORD wDivider, WORD wCardIndex = 0
 MCC_API int    MCC_CALL MCC_SetENCInputRate(WORD wInputRate, WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_ClearENCCounter(WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_GetENCValue(long *plValue, WORD wChannel, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetENCValueEx(long long *pllValue, WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_SetENCValue(long lValue, WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_SetENCGearRate(double dfGearRate, WORD wChannel, WORD wCardIndex = 0);
 
@@ -398,6 +396,7 @@ MCC_API int    MCC_CALL MCC_DisableENCCompTrigger(WORD wChannel, WORD wCardIndex
 MCC_API int    MCC_CALL MCC_EraseENCCompValue(WORD wChannel, WORD wCardIndex = 0);
 
 MCC_API int    MCC_CALL MCC_Set3DCompareTolerance(WORD wTolerance, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_SetENCCompValueTab(long lStartValue, long lEndValue, long lDeltaValue, WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_Enable3DCompareChannel(WORD wCompareAxisMask, WORD wCardIndex = 0);
 
 
@@ -409,7 +408,7 @@ MCC_API int    MCC_CALL MCC_EnableTimer(WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_DisableTimer(WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_EnableTimerTrigger(WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_DisableTimerTrigger(WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_SetWatchDogTimer(DWORD wValue, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_SetWatchDogTimer(DWORD dwValue, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_SetWatchDogResetPeriod(DWORD dwValue, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_EnableWatchDogTimer(WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_DisableWatchDogTimer(WORD wCardIndex = 0);
@@ -419,38 +418,18 @@ MCC_API int    MCC_CALL MCC_QueueLIOOutputValue(WORD wBitMask, WORD wValue, WORD
 
 //////////////////////////////////////////////////////////////////////////////
 // Remote Input/Output Control
-MCC_API int    MCC_CALL MCC_SetRIORoutine(RIOISR pfnRIORoutine, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_EnableRIOSetControl(WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_DisableRIOSetControl(WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_EnableRIOSlaveControl(WORD wSet, WORD wSlave = 0, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_DisableRIOSlaveControl(WORD wSet, WORD wSlave = 0, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetRIOTransStatus(WORD *pwStatus, WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetRIOMasterStatus(WORD *pwStatus, WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetRIOSlaveStatus(WORD *pwStatus, WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetRIOSlaveFail(DWORD *pdwStatus, WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetRIOInputValue(WORD *pwValue, WORD wSet, WORD wPort, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_SetRIOOutputValue(WORD wValue, WORD wSet, WORD wPort, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetRIOOutputValue(WORD *pwValue, WORD wSet, WORD wPort, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_SetRIOTransError(WORD wTime, WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_SetRIOTriggerType(WORD wType, WORD wSet, WORD wDigitalInput, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_EnableRIOInputTrigger(WORD wSet, WORD wDigitalInput, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_DisableRIOInputTrigger(WORD wSet, WORD wDigitalInput, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_EnableRIOTransTrigger(WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_DisableRIOTransTrigger(WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_QueueRIOOutputValue(WORD wBitMask, WORD wValue, WORD wSet, WORD wPort, WORD wGroupIndex = 0);
-
-MCC_API int    MCC_CALL MCC_SetARIOUpdateRate(double dfUpdateRate, WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_SetARIOClockDivider(WORD wDivider, WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_EnableARIOSlaveControl(WORD wSet, WORD wSlave = 0, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_DisableARIOSlaveControl(WORD wSet, WORD wSlave = 0, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetARIOTransStatus(WORD *pwStatus, WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetARIOMasterStatus(WORD *pwStatus, WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetARIOSlaveStatus(WORD *pwStatus, WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetARIOSlaveFail(DWORD *pdwStatus, WORD wSet, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetARIOInputValue(WORD *pwValue, WORD wSet, WORD wPort, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_SetARIOOutputValue(WORD wValue, WORD wSet, WORD wPort, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetARIOOutputValue(WORD *pwValue, WORD wSet, WORD wPort, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_QueueARIOOutputValue(WORD wBitMask, WORD wValue, WORD wSet, WORD wPort, WORD wGroupIndex = 0);
+MCC_API int    MCC_CALL MCC_SetARIOUpdateRate(double dfUpdateRate, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_SetARIOClockDivider(WORD wDivider, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_EnableARIOSlaveControl(WORD wSlave = 0, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_DisableARIOSlaveControl(WORD wSlave = 0, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_GetARIOTransStatus(WORD *pwStatus, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_GetARIOMasterStatus(WORD *pwStatus, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_GetARIOSlaveStatus(DWORD *pdwStatus, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_GetARIOSlaveFail(DWORD *pdwStatus, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_GetARIOInputValue(WORD *pwValue, WORD wSlave, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_SetARIOOutputValue(WORD wValue, WORD wSlave, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_GetARIOOutputValue(WORD *pwValue, WORD wSlave, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_QueueARIOOutputValue(WORD wValue, WORD wSlave, WORD wGroupIndex = 0);
 MCC_API int    MCC_CALL MCC_SetARIONode2NodeDelay(DWORD dwDelay, WORD wCardIndex = 0);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -471,21 +450,10 @@ MCC_API int    MCC_CALL MCC_StopDACConv(WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_SetADCRoutine(ADCISR pfnADCRoutine, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_SetADCConvType(WORD wConvType, WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_GetADCConvType(WORD *pwConvType, WORD wChannel, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_SetADCConvMode(WORD wConvMode, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_GetADCInput(float *pfInput, WORD wChannel, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_SetADCSingleChannel(WORD wChannel, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_GetADCWorkStatus(WORD *pwSTatus, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_EnableADCConvTrigger(WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_DisableADCConvTrigger(WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_SetADCTagChannel(WORD wChannel, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_EnableADCTagTrigger(WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_DisableADCTagTrigger(WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_SetADCCompMask(WORD wMask, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_SetADCCompType(WORD wCompType, WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_SetADCCompValue(float fValue, WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_GetADCCompValue(float *pfValue, WORD wChannel, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_EnableADCCompTrigger(WORD wChannel, WORD wCardIndex = 0);
-MCC_API int    MCC_CALL MCC_DisableADCCompTrigger(WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_EnableADCConvChannel(WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_DisableADCConvChannel(WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_StartADCConv(WORD wCardIndex = 0);
@@ -517,133 +485,10 @@ MCC_API int    MCC_CALL MCC_ConeZX_Y(double dfCZ, double dfCX, double dfPos, dou
 
 
 //////////////////////////////////////////////////////////////////////////////
-// Special functions only for Robot Control
-
-// Customize kinematics transformation rules
-MCC_API int    MCC_CALL MCC_SetKinematicTrans(
-							FWDKINEFUN pfnFwdKinematics,
-							INVKINEFUN pfnInvKinematics,
-							DWORD dwExtensionSize = 0,
-							INIT_EXTENSION pfnInitExtension = 0,
-							int nGroup = 0
-							);
-
-MCC_API int    MCC_CALL MCC_SetPreProcessMotionCommandCallback(
-							PRE_PROCESS_MOTION_COMMAND pfnPreProcMotionCmd,
-							WORD wGroupIndex = 0
-							);
-
-// Point-to-Point Motion
-MCC_API int    MCC_CALL MCC_PtP_V6(
-							double j0,
-							double j1,
-							double j2,
-							double j3,
-							double j4,
-							double j5,
-							double j6,
-							double j7,
-							WORD wGroupIndex = 0,
-							DWORD dwAxisMask = IMP_AXIS_ALL
-							);
-
-// Linear Motion
-MCC_API int    MCC_CALL MCC_Line_V6(
-							double x,
-							double y,
-							double z,
-							double rx,
-							double ry,
-							double rz,
-							double a,
-							double b,
-							DWORD posture = 0,
-							WORD wGroupIndex = 0,
-							DWORD dwAxisMask = IMP_AXIS_ALL
-							);
-
-// Circular Motion
-MCC_API int    MCC_CALL MCC_Arc_V6(
-							double x0, // ref. point for x axis
-							double y0, // ref. point for y axis
-							double z0, // ref. point for z axis
-							double x1, // target point for x axis
-							double y1, // target point for y axis
-							double z1, // target point for z axis
-							double rx, // target point for x orientation
-							double ry, // target point for y orientation
-							double rz, // target point for z orientation
-							DWORD posture = 0,
-							WORD wGroupIndex = 0,
-							DWORD dwAxisMask = IMP_AXIS_ALL
-							);
-
-MCC_API int    MCC_CALL MCC_ArcTheta_V6(
-							double cx,    // center point for x axis
-							double cy,    // center point for y axis
-							double cz,    // center point for z axis
-							double nv0,   // normal vector for x direction
-							double nv1,   // normal vector for y direction
-							double nv2,   // normal vector for z direction
-							double theta, // degree, +/- stands for direction
-							double rx,    // target point for x orientation
-							double ry,    // target point for y orientation
-							double rz,    // target point for z orientation
-							DWORD posture = 0,
-							WORD wGroupIndex = 0,
-							DWORD dwAxisMask = IMP_AXIS_ALL
-							);
-
-MCC_API int    MCC_CALL MCC_CircleXY_V6(
-							double cx, // center point for x axis
-							double cy, // center point for y axis
-							double rx, // target point for x orientation
-							double ry, // target point for y orientation
-							double rz, // target point for z orientation
-							BYTE byCirDir, // CW or CCW
-							DWORD posture = 0,
-							WORD wGroupIndex = 0);
-
-MCC_API int    MCC_CALL MCC_CircleYZ_V6(
-							double cy, // center point for y axis
-							double cz, // center point for z axis
-							double rx, // target point for x orientation
-							double ry, // target point for y orientation
-							double rz, // target point for z orientation
-							BYTE byCirDir, // CW or CCW
-							DWORD posture = 0,
-							WORD wGroupIndex = 0);
-
-MCC_API int    MCC_CALL MCC_CircleZX_V6(
-							double cz, // center point for z axis
-							double cx, // center point for x axis
-							double rx, // target point for x orientation
-							double ry, // target point for y orientation
-							double rz, // target point for z orientation
-							BYTE byCirDir, // CW or CCW
-							DWORD posture = 0,
-							WORD wGroupIndex = 0);
-
-MCC_API int    MCC_CALL MCC_Circle_V6(
-							double x0, // 1st ref. point for x axis
-							double y0, // 1st ref. point for y axis
-							double z0, // 1st ref. point for z axis
-							double x1, // 2nd ref. point for x axis
-							double y1, // 2nd ref. point for y axis
-							double z1, // 2nd ref. point for z axis
-							double rx, // target point for x orientation
-							double ry, // target point for y orientation
-							double rz, // target point for z orientation
-							DWORD posture = 0,
-							WORD wGroupIndex = 0,
-							DWORD dwAxisMask = IMP_AXIS_ALL
-							);
-
-
-
-//////////////////////////////////////////////////////////////////////////////
 // Obsolete functions in earlier version of MCCL (existed only for
 // compatibility and should not be used anymore)
+MCC_API int    MCC_CALL MCC_SetCmdQueueSize(int nSize, WORD wGroupIndex = 0);
+
 MCC_API int    MCC_CALL MCC_SetCycleInterruptRoutine(CYCLE_INTERRUPT_ISR pfnCycleIntRoutine);
 MCC_API int    MCC_CALL MCC_SetMachParam(SYS_MACH_PARAM *pstMachParam, WORD wChannel, WORD wCardIndex = 0);
 MCC_API int    MCC_CALL MCC_GetMachParam(SYS_MACH_PARAM *pstMachParam, WORD wChannel, WORD wCardIndex = 0);
@@ -675,6 +520,26 @@ MCC_API int    MCC_CALL MCC_GetUnit(WORD wGroupIndex = 0);
 
 MCC_API int    MCC_CALL MCC_EnableMovingAverage(WORD wGroupIndex);
 MCC_API int    MCC_CALL MCC_DisableMovingAverage(WORD wGroupIndex);
+
+MCC_API int    MCC_CALL MCC_SetRIORoutine(RIOISR pfnRIORoutine, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_EnableRIOSetControl(WORD wSet, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_DisableRIOSetControl(WORD wSet, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_EnableRIOSlaveControl(WORD wSet, WORD wSlave = 0, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_DisableRIOSlaveControl(WORD wSet, WORD wSlave = 0, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_GetRIOTransStatus(WORD *pwStatus, WORD wSet, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_GetRIOMasterStatus(WORD *pwStatus, WORD wSet, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_GetRIOSlaveStatus(WORD *pwStatus, WORD wSet, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_GetRIOSlaveFail(DWORD *pdwStatus, WORD wSet, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_GetRIOInputValue(WORD *pwValue, WORD wSet, WORD wPort, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_SetRIOOutputValue(WORD wValue, WORD wSet, WORD wPort, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_GetRIOOutputValue(WORD *pwValue, WORD wSet, WORD wPort, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_SetRIOTransError(WORD wTime, WORD wSet, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_SetRIOTriggerType(WORD wType, WORD wSet, WORD wDigitalInput, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_EnableRIOInputTrigger(WORD wSet, WORD wDigitalInput, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_DisableRIOInputTrigger(WORD wSet, WORD wDigitalInput, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_EnableRIOTransTrigger(WORD wSet, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_DisableRIOTransTrigger(WORD wSet, WORD wCardIndex = 0);
+MCC_API int    MCC_CALL MCC_QueueRIOOutputValue(WORD wBitMask, WORD wValue, WORD wSet, WORD wPort, WORD wGroupIndex = 0);
 
 // Custom Motion
 MCC_API int    MCC_CALL MCC_CustomMotionEx(
