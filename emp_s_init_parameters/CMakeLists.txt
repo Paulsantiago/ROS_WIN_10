@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(emp_s_init_parameters)
-
+message("cheking meps CMAKE")
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
 
@@ -11,6 +11,9 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  geometry_msgs
+  message_generation
+   actionlib_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -47,18 +50,18 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  Joint.msg
+  Move.msg
+  CartesianPoint.msg
+  )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+   FILES
+   SetSpeed.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -68,10 +71,11 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+ generate_messages(
+  DEPENDENCIES
+   std_msgs
+    actionlib_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -103,10 +107,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES emp_s_init_parameters
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES emp_s_init_parameters
+  CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime
+ # DEPENDS system_lib
 )
 
 ###########
@@ -196,11 +200,22 @@ include_directories(
 ## Testing ##
 #############
 
-## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_emp_s_init_parameters.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+## Declare a catkin package
+#catkin_package()
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+## Build talker and listener
+find_package(MCCLPCI_IMP3 REQUIRED)
 
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
+#include_directories(include ${catkin_INCLUDE_DIRS} ${MCCL_INCLUDE_DIR} ${NCCL_INCLUDE_DIR})
+include_directories(include ${catkin_INCLUDE_DIRS} ${MCCL_FUNC_INCLUDE_DIR} ${MCCL_INCLUDE_DIR} )
+#talker Listener
+add_executable(MCCL_ROS src/MCCL_ROS.cpp)
+target_link_libraries(MCCL_ROS ${catkin_LIBRARIES} ${MCCL_LIBRARY_lib} )
+add_dependencies(MCCL_ROS emp_s_init_parameters_generate_messages_cpp)
+#talker Listener
+add_executable(testMotionMCCL src/testMotionMCCL.cpp)
+target_link_libraries(testMotionMCCL ${catkin_LIBRARIES} ${MCCL_LIBRARY_lib} )
+add_dependencies(MCCL_ROS emp_s_init_parameters_generate_messages_cpp)
+
+
+
