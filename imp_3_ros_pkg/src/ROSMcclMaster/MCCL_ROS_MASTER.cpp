@@ -11,7 +11,7 @@ ROS_MCCL::ROS_MCCL (int a, int b) {
 }
 ROS_MCCL::ROS_MCCL(ros::NodeHandle* nodehandle):nh_(*nodehandle)
 { // constructor
-    ROS_INFO("in class constructor of ROS_MCCL initializating .... ");
+    ROS_INFO("***********in class constructor of ROS_MCCL initializating .... ");
     if(initParameters())
 	{
 		initializeSubscribers(); // package up the messy work of creating subscribers; do this overhead in constructor
@@ -82,11 +82,11 @@ void ROS_MCCL::initializeServices()
 void ROS_MCCL::initializePublishers()
 {
     ROS_INFO("Initializing Publishers");
-    CurCpos_publisher_ = nh_.advertise<emp_s_init_parameters::CartesianPoint>("curcpos_MCCL", 1, true); 
+    CurCpos_publisher_ = nh_.advertise<imp_3_ros_pkg::CartesianPoint>("curcpos_MCCL", 1, true); 
     //add more publishers, as needed
     // note: COULD make minimal_publisher_ a public member function, if want to use it within "main()"
 }
-void ROS_MCCL::line_subscriberCallback(const emp_s_init_parameters::CartesianPoint& pointMsg) {
+void ROS_MCCL::line_subscriberCallback(const imp_3_ros_pkg::CartesianPoint& pointMsg) {
     // the real work is done in this callback function
     // it wakes up every time a new message is published on "exampleMinimalSubTopic"
     val_Point = pointMsg; // copy the received data into member variable, so ALL member funcs of ExampleRosClass can access it
@@ -100,7 +100,7 @@ void ROS_MCCL::line_subscriberCallback(const emp_s_init_parameters::CartesianPoi
   	ROS_INFO("Line callback : %d" , nRet);
 
 }
-void ROS_MCCL::ptp_subscriberCallback(const emp_s_init_parameters::Joint& jointMsg) {
+void ROS_MCCL::ptp_subscriberCallback(const imp_3_ros_pkg::Joint& jointMsg) {
     // it wakes up every time a new message is published on "exampleMinimalSubTopic"
     val_Joint = jointMsg; // copy the received data into member variable, so ALL member funcs of ExampleRosClass can access it
     ROS_INFO("myCallback activated: received value J1: %f , J2 : %f ",jointMsg.J1,jointMsg.J2);
@@ -114,7 +114,7 @@ void ROS_MCCL::ptp_subscriberCallback(const emp_s_init_parameters::Joint& jointM
 }
 
 //member function implementation for a service callback function
-bool ROS_MCCL::serviceCallback(emp_s_init_parameters::SetSpeedRequest& request, emp_s_init_parameters::SetSpeedResponse& response) {
+bool ROS_MCCL::serviceCallback(imp_3_ros_pkg::SetSpeedRequest& request, imp_3_ros_pkg::SetSpeedResponse& response) {
     ROS_INFO("service callback activated");
     response.status = true; // boring, but valid response info
     return true;
@@ -201,16 +201,17 @@ bool ROS_MCCL::initParameters()
 	stCardConfig[CARD_INDEX].wIRQ_No      = IRQ_NO;      //  IRQ No., PCI card ignores this setting
 	stCardConfig[CARD_INDEX].wPaddle      = 0;
     // INIT
-	nRet = MCC_InitSimulation(INTERPOLATION_TIME,// set interpolation time interval and get some errors happening or not
+	//MCC_InitSimulation
+	nRet = MCC_InitSystem(INTERPOLATION_TIME,// set interpolation time interval and get some errors happening or not
 						  stCardConfig,
 						  1);		         //  only use one card
-	printf(" \n  MCC_InitSimulation !  Return Value : %d", nRet);
+	printf(" \n  MCC_InitSystem  Return Value : %d", nRet);
 
 	if (nRet == NO_ERR)
 	{
 		printf("  Initialization is successfull initVal  = %d !\n\n" , nRet );
-		//MCC_SetServoOn(0, CARD_INDEX);//  set channel 0 servv on 
-		//MCC_SetServoOn(1, CARD_INDEX);//  set channel 1 servv on 
+		MCC_SetServoOn(0, CARD_INDEX);//  set channel 0 servv on 
+		MCC_SetServoOn(1, CARD_INDEX);//  set channel 1 servv on 
 
 		MCC_SetAbsolute(g_nGroupIndex);     //  use Absolute coordinate mode
 		//  you must regulate accleration and deceleration time depending on different speed for a smooth moving		
@@ -243,20 +244,22 @@ bool ROS_MCCL::initParameters()
 
 int main (int argc, char **argv)
  {
-    ros::init(argc, argv, "exampleRosClassMCCL"); //node name
-    ros::NodeHandle nh; // create a node handle; need to pass this to the class constructor
-    ROS_INFO("main: instantiating an object of type exampleRosClassMCCL");
+    ros::init(argc, argv, "MCCL_ROS"); //node name
     
-	ROS_MCCL exampleRosClassMCCL(&nh);  //instantiate an ExampleRosClass object and pass in pointer to nodehandle for constructor to use
+    
+    ros::NodeHandle nh; // create a node handle; need to pass this to the class constructor
+    ROS_INFO("main: instantiating an object of type MCCL_ROS");
+    
+	ROS_MCCL MCCL_ROS(&nh);  //instantiate an ExampleRosClass object and pass in pointer to nodehandle for constructor to use
 	
-	ros::Publisher chatter_publisher = nh.advertise<emp_s_init_parameters::CartesianPoint>("chatter",1000);
+	/*ros::Publisher chatter_publisher = nh.advertise<imp_3_ros_pkg::CartesianPoint>("chatter",1000);
 	ros::Rate loop_rate(1.0);
 	
-	///ros::Timer timer = nh.createTimer(ros::Duration(0.016), boost::bind(timerCallback, _1, exampleRosClassMCCL));
-	//ros::Timer timer = nh.createTimer(ros::Duration(0.01), boost::bind(&ROS_MCCL::tupdate, _1, &exampleRosClassMCCL));
+	///ros::Timer timer = nh.createTimer(ros::Duration(0.016), boost::bind(timerCallback, _1, MCCL_ROS));
+	//ros::Timer timer = nh.createTimer(ros::Duration(0.01), boost::bind(&ROS_MCCL::tupdate, _1, &MCCL_ROS));
 	while (ros::ok())
 	{
-		emp_s_init_parameters::CartesianPoint tpoint ; 
+		imp_3_ros_pkg::CartesianPoint tpoint ; 
 	tpoint.X = 50 ; 
 	tpoint.Y = 30; 
 	tpoint.Z = 80; 
@@ -264,27 +267,25 @@ int main (int argc, char **argv)
 	tpoint.RY = 0;
 	tpoint.RZ = 0;
 	chatter_publisher.publish(tpoint);
-	ROS_INFO(" Puvlishing" );
+	ROS_INFO(" Publishing" );
 	ros::spinOnce();
 	loop_rate.sleep();
-	}
+	}*/
 
-	
-	
-	ros::Timer timer = nh.createTimer(ros::Duration(0.015), &ROS_MCCL::tupdate, &exampleRosClassMCCL);
+	ros::Timer timer = nh.createTimer(ros::Duration(0.015), &ROS_MCCL::tupdate, &MCCL_ROS);
 
-	emp_s_init_parameters::CartesianPoint tpoint ; 
+	imp_3_ros_pkg::CartesianPoint tpoint ; 
 	tpoint.X = 50 ; 
 	tpoint.Y = 30; 
 	tpoint.Z = 80; 
 	tpoint.RX = 40;
 	tpoint.RY = 0;
 	tpoint.RZ = 0;
-	exampleRosClassMCCL.line_publisher.publish(tpoint);
+	MCCL_ROS.line_publisher.publish(tpoint);
 
 	//exampleRosClassMCCL.CurCpos_publisher
 
-	//ros::Publisher mccl_pub = nh.advertise<emp_s_init_parameters::Point>("line_MCCL",1,true);
+	//ros::Publisher mccl_pub = nh.advertise<imp_3_ros_pkg::Point>("line_MCCL",1,true);
 
 	//ros::Subscriber pose_sub = nh.subscribe("Curpos_MCCL", 1, poseCallback);
 	

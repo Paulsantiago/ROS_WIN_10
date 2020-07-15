@@ -57,19 +57,18 @@ message_generation
 ##   * uncomment the generate_messages entry below
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
-## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  Joint.msg
+  Move.msg
+  CartesianPoint.msg
+  )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+   FILES
+   SetSpeed.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -77,6 +76,13 @@ message_generation
 #   Action1.action
 #   Action2.action
 # )
+
+## Generate added messages and services with any dependencies listed here
+ generate_messages(
+  DEPENDENCIES
+   std_msgs
+    actionlib_msgs
+ )
 
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
@@ -114,10 +120,10 @@ message_generation
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  #INCLUDE_DIRS include
-#  LIBRARIES imp_3_ros_pkg
-  #CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES emp_s_init_parameters
+  CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime
+ # DEPENDS system_lib
 )
 
 ###########
@@ -130,6 +136,7 @@ include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
 )
+
 
 
 ## Declare a C++ library
@@ -152,11 +159,13 @@ find_package(MCCLPCI_IMP3 REQUIRED)
 
 #include_directories(include ${catkin_INCLUDE_DIRS} ${MCCL_INCLUDE_DIR} ${NCCL_INCLUDE_DIR})
 include_directories(include ${catkin_INCLUDE_DIRS} ${MCCL_FUNC_INCLUDE_DIR} ${MCCL_INCLUDE_DIR})
-#talker Listener
+add_executable(initSysEXE src/InitSys/initSys.cpp)
+target_link_libraries(initSysEXE ${catkin_LIBRARIES} ${MCCL_LIBRARY_lib} ${IMC3Driver_lib} )
+add_dependencies(initSysEXE imp_3_ros_pkg_generate_messages_cpp)
 
-add_executable(initSys src/InitSys/initSys.cpp)
-target_link_libraries(initSys ${catkin_LIBRARIES} ${MCCL_LIBRARY_lib} ${IMC3Driver_lib} )
-#add_dependencies(initSys imp_3_ros_pkg_generate_messages_cpp)
+add_executable(TurtleGoPositionexe src/ROSTturtleSim/TurtleGoPosition.cpp)
+target_link_libraries(TurtleGoPositionexe ${catkin_LIBRARIES} )
+add_dependencies(TurtleGoPositionexe imp_3_ros_pkg_generate_messages_cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
