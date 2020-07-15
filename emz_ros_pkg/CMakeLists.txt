@@ -7,8 +7,14 @@ project(emz_ros_pkg)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
-
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  std_msgs
+  geometry_msgs
+  message_generation
+   actionlib_msgs
+)
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -41,20 +47,20 @@ find_package(catkin REQUIRED)
 ##     and list every .msg/.srv/.action file to be processed
 ##   * uncomment the generate_messages entry below
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
+add_message_files(
+     FILES
+  Joint.msg
+  Move.msg
+  CartesianPoint.msg
+  
 
-## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+ )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+   FILES
+   SetSpeed.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -64,10 +70,11 @@ find_package(catkin REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+ generate_messages(
+  DEPENDENCIES
+   std_msgs
+    actionlib_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -100,9 +107,9 @@ find_package(catkin REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES emz_ros_pkg
-#  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
+#  LIBRARIES ros_basics_tutorial_mccl
+  CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime
+  #DEPENDS system_lib
 )
 
 ###########
@@ -113,9 +120,8 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
 # include
-# ${catkin_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
 )
-
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/emz_ros_pkg.cpp
@@ -192,11 +198,53 @@ include_directories(
 ## Testing ##
 #############
 
-## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_emz_ros_pkg.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
 
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
+## Declare a catkin package
+#catkin_package()
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+## Build talker and listener
+find_package(MCCLPCI_IMP3 REQUIRED)
+
+#include_directories(include ${catkin_INCLUDE_DIRS} ${MCCL_INCLUDE_DIR} ${NCCL_INCLUDE_DIR})
+include_directories(include ${catkin_INCLUDE_DIRS} ${MCCL_FUNC_INCLUDE_DIR} ${MCCL_INCLUDE_DIR} ${NCCL_INCLUDE_DIR})
+
+
+add_executable(MCCL_ZTest src/FunctionTestMcclRos/MCCL_ZTest.cpp)
+target_link_libraries(MCCL_ZTest ${catkin_LIBRARIES} )
+add_dependencies(MCCL_ZTest emz_ros_pkg_generate_messages_cpp)
+
+
+#add_executable(testMotionMCCL src/MCCL_TURTLE/testMotionMCCL.cpp)
+#target_link_libraries(testMotionMCCL ${catkin_LIBRARIES})
+#add_dependencies(testMotionMCCL beginner_tutorials_mccl_generate_messages_cpp)
+
+#add_executable(example src/MCCL_TURTLE/example.cpp)
+#target_link_libraries(example ${catkin_LIBRARIES}  ${MCCL_LIBRARY_lib})
+#add_dependencies(example beginner_tutorials_mccl_generate_messages_cpp)
+
+# TEST NCCL${catkin_LIBRARIES} ${NCCL64_LIBRARY_lib}
+add_executable(InitSysNcclexe src/testNCCL/InitSysNccl.cpp)
+target_link_libraries(InitSysNcclexe ${catkin_LIBRARIES} ${NCCL64_LIBRARY_lib})
+add_dependencies(InitSysNcclexe emz_ros_pkg_generate_messages_cpp)
+
+
+
+
+#add_executable(turtleMove src/TURTLE/turtleMove.cpp)
+#target_link_libraries(turtleMove ${catkin_LIBRARIES} ${MCCL_LIBRARY_lib})
+#add_dependencies(turtleMove beginner_tutorials_mccl_generate_messages_cpp)
+
+
+#add_executable(mcclInit src/FunctionTestMcclRos/mcclInit.cpp)
+#target_link_libraries(mcclInit ${catkin_LIBRARIES} ${MCCL_LIBRARY_lib})
+#add_dependencies(mcclInit beginner_tutorials_mccl_generate_messages_cpp)
+
+
+#add_executable(testMotionMCCL src/MCCL_TURTLE/testMotionMCCL.cpp)
+#target_link_libraries(testMotionMCCL ${catkin_LIBRARIES})
+#add_dependencies(testMotionMCCL beginner_tutorials_mccl_generate_messages_cpp)
+
+#add_executable(example src/MCCL_TURTLE/example.cpp)
+#target_link_libraries(example ${catkin_LIBRARIES}  ${MCCL_LIBRARY_lib})
+#add_dependencies(example beginner_tutorials_mccl_generate_messages_cpp)
+
