@@ -34,9 +34,9 @@ void InPositionCallback(const std_msgs::String::ConstPtr& msg)
   }
 	
 }
-void chatterCallback(const emp_s_init_parameters::CartesianPoint msg  )
+void chatterCallback( emp_s_init_parameters::CartesianPoint msg  )
 {
-  ROS_INFO("Still moving: [%s]", msg.X);  
+  ROS_INFO("Still moving: [%f]", msg.X);  
 
 }
 
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
   //ros::Subscriber get_Curpos_sub = n.subscribe("GetCurPositionMCCL", 5 , GetCurPosCallBack );
   ros::Subscriber get_InPos_sub = n.subscribe("GetInPositionMCCL", 1000, InPositionCallback);
 
-   ros::Subscriber GET = n.subscribe("chatter", 100, chatterCallback);
+   ros::Subscriber GET = n.subscribe("chatter", 1000, chatterCallback);
 // %EndTag(PUBLISHER)%
 
 // %Tag(LOOP_RATE)%
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
    */
 // %Tag(ROS_OK)%
   int count = 0;
-  while (ros::ok())
+  /*while (ros::ok())
   {
 
     if(InPos == 0)
@@ -96,10 +96,10 @@ int main(int argc, char **argv)
     loop_rate.sleep();
 // %EndTag(RATE_SLEEP)%
     ++count;
-  }
+  }*/
 
 
-
+ros::spin();
   return 0;
 }
 // %EndTag(FULLTEXT)%
