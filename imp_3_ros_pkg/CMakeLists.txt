@@ -159,6 +159,8 @@ find_package(MCCLPCI_IMP3 REQUIRED)
 
 #include_directories(include ${catkin_INCLUDE_DIRS} ${MCCL_INCLUDE_DIR} ${NCCL_INCLUDE_DIR})
 include_directories(include ${catkin_INCLUDE_DIRS} ${MCCL_FUNC_INCLUDE_DIR} ${MCCL_INCLUDE_DIR})
+
+
 add_executable(initSysEXE src/InitSys/initSys.cpp)
 target_link_libraries(initSysEXE ${catkin_LIBRARIES} ${MCCL_LIBRARY_lib} ${IMC3Driver_lib} )
 add_dependencies(initSysEXE imp_3_ros_pkg_generate_messages_cpp)
@@ -166,6 +168,22 @@ add_dependencies(initSysEXE imp_3_ros_pkg_generate_messages_cpp)
 add_executable(TurtleGoPositionexe src/ROSTturtleSim/TurtleGoPosition.cpp)
 target_link_libraries(TurtleGoPositionexe ${catkin_LIBRARIES} )
 add_dependencies(TurtleGoPositionexe imp_3_ros_pkg_generate_messages_cpp)
+
+
+add_executable(GeneralMotionEXE src/GeneralMotion/GeneralMotion.cpp)
+target_link_libraries(GeneralMotionEXE ${catkin_LIBRARIES} ${MCCL_LIBRARY_lib} ${IMC3Driver_lib} )
+add_dependencies(GeneralMotionEXE imp_3_ros_pkg_generate_messages_cpp)
+
+
+add_executable(MCCL_ROS_MASTERexe src/ROSMcclMaster/MCCL_ROS_MASTER.cpp)
+target_link_libraries(MCCL_ROS_MASTERexe ${catkin_LIBRARIES} ${MCCL_LIBRARY_lib} ${IMC3Driver_lib} )
+add_dependencies(MCCL_ROS_MASTERexe imp_3_ros_pkg_generate_messages_cpp)
+
+
+add_executable(CloseSystemexe src/GeneralMotion/CloseSystem.cpp)
+target_link_libraries(CloseSystemexe ${catkin_LIBRARIES} ${MCCL_LIBRARY_lib} ${IMC3Driver_lib} )
+add_dependencies(CloseSystemexe imp_3_ros_pkg_generate_messages_cpp)
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

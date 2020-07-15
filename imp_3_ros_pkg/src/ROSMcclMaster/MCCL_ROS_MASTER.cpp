@@ -61,7 +61,8 @@ void ROS_MCCL::initializeSubscribers()
     ROS_INFO("Initializing Subscribers");
     line_subs = nh_.subscribe("line_MCCL", 1, 		&ROS_MCCL::line_subscriberCallback,this);  
 	ptp_subs = nh_.subscribe("ptp_MCCL", 1, 		&ROS_MCCL::ptp_subscriberCallback,this);  
-	//cur_pos = nh_.subscribe("curPos_MCCL", 1, 		&ROS_MCCL::curPos_subscriberCallback,this);  
+	close_subs = nh_.subscribe("close_MCCL", 1, 		&ROS_MCCL::close_subscriberCallback,this);  
+	//inPos_subs = nh_.subscribe("inPositionStatus", 1, 		&ROS_MCCL::inPos_subscriberCallback,this);  
 	//circle_subs = nh_.subscribe("circle_MCCL", 1, 	&ROS_MCCL::circle_subscriberCallback,this);  
 	//arc_subs = nh_.subscribe("arc_MCCL", 1, 		&ROS_MCCL::arc_subscriberCallback,this);  
     // add more subscribers here, as needed
@@ -83,6 +84,7 @@ void ROS_MCCL::initializePublishers()
 {
     ROS_INFO("Initializing Publishers");
     CurCpos_publisher_ = nh_.advertise<imp_3_ros_pkg::CartesianPoint>("curcpos_MCCL", 1, true); 
+	//inPos_publisher_ = nh_.advertise<int>("inPositionStatus", 1, true); 
     //add more publishers, as needed
     // note: COULD make minimal_publisher_ a public member function, if want to use it within "main()"
 }
@@ -113,6 +115,18 @@ void ROS_MCCL::ptp_subscriberCallback(const imp_3_ros_pkg::Joint& jointMsg) {
   	ROS_INFO("MCC_PtP callback : %d" , nRet);
 }
 
+void ROS_MCCL::close_subscriberCallback(const std_msgs::Bool &close) {
+    // it wakes up every time a new message is published on "exampleMinimalSubTopic"
+   
+    ROS_INFO("------------Close system ----------------------");
+	MCC_CloseSystem();
+	MCC_SetServoOff(0, CARD_INDEX);//  set channel 0 servv on 
+	MCC_SetServoOff(1, CARD_INDEX);//  set channel 1 servv on 
+	
+  	ROS_INFO("MCC_CLOSE callback");
+}
+
+
 //member function implementation for a service callback function
 bool ROS_MCCL::serviceCallback(imp_3_ros_pkg::SetSpeedRequest& request, imp_3_ros_pkg::SetSpeedResponse& response) {
     ROS_INFO("service callback activated");
@@ -130,7 +144,7 @@ void ROS_MCCL::tupdate(const ros::TimerEvent& event)
 					&dfCurPosU, &dfCurPosV, &dfCurPosW, 
 					&dfCurPosA, &dfCurPosB, g_nGroupIndex);
 
-		
+		int res = MCC_GetMotionStatus(g_nGroupIndex);
 		val_to_Publish.X=dfCurPosX; 
 		val_to_Publish.Y=dfCurPosY; 
 		val_to_Publish.Z=dfCurPosZ; 
@@ -138,6 +152,7 @@ void ROS_MCCL::tupdate(const ros::TimerEvent& event)
 		val_to_Publish.RY=dfCurPosV;
 		val_to_Publish.RZ=dfCurPosW;
 		//printf("x: %f",dfCurPosX);
+		inPos_publisher_.publish(res);
 		CurCpos_publisher_.publish(val_to_Publish);
 		
 	}

@@ -13,10 +13,10 @@
 //message types used in this example code;  include more message types, as needed
 #include <std_msgs/Bool.h> 
 #include <std_msgs/Float32.h>
-#include <emp_s_init_parameters/SetSpeed.h>
-#include <emp_s_init_parameters/Move.h>
-#include <emp_s_init_parameters/Joint.h>
-#include <emp_s_init_parameters/CartesianPoint.h>
+#include <imp_3_ros_pkg/SetSpeed.h>
+#include <imp_3_ros_pkg/Move.h>
+#include <imp_3_ros_pkg/Joint.h>
+#include <imp_3_ros_pkg/CartesianPoint.h>
 
 
 # include <geometry_msgs/Twist.h>
@@ -59,12 +59,14 @@ private:
     ros::NodeHandle nh_; // we will need this, to pass between "main" and constructor
     ros::Subscriber line_subs; //these will be set up within the class constructor, hiding these ugly details
     ros::Subscriber ptp_subs; //these will be set up within the class constructor, hiding these ugly details
-    ros::Subscriber circle_subs; //these will be set up within the class constructor, hiding these ugly details
+    //ros::Subscriber inPos_subs; //these will be set up within the class constructor, hiding these ugly details
     ros::Subscriber arc_subs; //these will be set up within the class constructor, hiding these ugly details
     ros::Subscriber cur_pos; //these will be set up within the class constructor, hiding these ugly details
+    ros::Subscriber close_subs; //these will be set up within the class constructor, hiding these ugly details
   
     ros::Publisher  CurCpos_publisher_;
     ros::Publisher  CurJpos_publisher_;
+    ros::Publisher  inPos_publisher_;
 
 
     ros::ServiceServer minimal_service_;
@@ -72,10 +74,10 @@ private:
     ros::Timer timerUpdate;
     
 
-    emp_s_init_parameters::CartesianPoint val_Point; //example member variable: better than using globals; convenient way to pass data from a subscriber to other member functions
-    emp_s_init_parameters::CartesianPoint val_to_Publish; 
-    emp_s_init_parameters::Joint val_Joint; // member variables will retain their values even as callbacks come and go
-    
+    imp_3_ros_pkg::CartesianPoint val_Point; //example member variable: better than using globals; convenient way to pass data from a subscriber to other member functions
+    imp_3_ros_pkg::CartesianPoint val_to_Publish; 
+    imp_3_ros_pkg::Joint val_Joint; // member variables will retain their values even as callbacks come and go
+    int inPos=-1; 
     int g_nGroupIndex = -1;
     double dfCurPosX, dfCurPosY, dfCurPosZ, dfCurPosU, dfCurPosV, dfCurPosW, dfCurPosA, dfCurPosB;
     double dfPosX ;
@@ -89,15 +91,17 @@ private:
     void initializeServices();
     void initTimer();
     bool initParameters();
-    void line_subscriberCallback(const emp_s_init_parameters::CartesianPoint& pointMsg);
-    void ptp_subscriberCallback(const emp_s_init_parameters::Joint& jointMsg);
+    void line_subscriberCallback(const imp_3_ros_pkg::CartesianPoint& pointMsg);
+    void ptp_subscriberCallback(const imp_3_ros_pkg::Joint& jointMsg);
+    void close_subscriberCallback(const std_msgs::Bool& ok);
+    //void inPos_subscriberCallback(const std_msgs::Bool& ok);
 
     //void curPos_subscriberCallback(const ros_basics_tutorial_mccl::Joint& jointMsg);
     //void circle_subscriberCallback(const ros_basics_tutorial_mccl::CartesianPoint& pointMsg);
     //void arc_subscriberCallback(const ros_basics_tutorial_mccl::CartesianPoint& pointMsg);
 
     //prototype for callback for example service
-    bool serviceCallback(emp_s_init_parameters::SetSpeedRequest & request, emp_s_init_parameters::SetSpeedResponse & response);
+    bool serviceCallback(imp_3_ros_pkg::SetSpeedRequest & request, imp_3_ros_pkg::SetSpeedResponse & response);
 }; // note: a class definition requires a semicolon at the end of the definition
 
 #endif  // this closes the header-include trick...ALWAYS need one of these to match #ifndef
