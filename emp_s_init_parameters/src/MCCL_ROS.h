@@ -21,7 +21,7 @@
 
 # include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose.h>
-#include "../include/MCCL_Fun.h"
+#include "../include/MCCL_RTX.h"
 
 
 using namespace std;
@@ -32,7 +32,7 @@ using namespace std;
 #define IRQ_NO                      5  //in PCI, user can input arbitrary number
 #define INTERPOLATION_TIME          2  // ms
 #define ESC_KEY                    27
-#define AXIS_NUM                    2
+#define AXIS_NUM                    6
 
 
 class ROS_MCCL {

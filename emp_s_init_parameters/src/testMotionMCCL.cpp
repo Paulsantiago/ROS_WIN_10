@@ -1,135 +1,161 @@
 
-#include "ros/ros.h"
-#include "std_msgs/String.h"
-#include <sstream>
-#include <geometry_msgs/Twist.h>
-#include <geometry_msgs/Pose.h>
+// %EndTag(MSG_HEADER)%
+//#include <conio.h>
+//#include <stdio.h>
+#include <ros/ros.h> //ALWAYS need to include this
+#include "geometry_msgs/Twist.h"
+ #include "std_msgs/Int32.h"
+ #include "std_msgs/Bool.h"
+#include "turtlesim/Pose.h"
+
+#include "emp_s_init_parameters/Joint.h"
 #include <emp_s_init_parameters/CartesianPoint.h>
-int InPos = 1 ;
-//float dfCurPosX,dfCurPosX;
-/*void InPositionCallback(const std_msgs::String::ConstPtr& msg)
+#include <conio.h>
+ #include <stdio.h>
+ #include <sstream>
+using namespace std;
+/* topics : 
+line_MCCL
+ptp_MCCL
+curcpos_MCCL
+*/
+ros::Publisher line_pub ; 
+ros::Publisher velocity_publisher;
+ros::Subscriber cur_pos ;
+ros::Subscriber in_pos ;
+turtlesim::Pose turtlesim_pose ;
+
+int inPos ; 
+void moveGoal(turtlesim::Pose  goal_pose, double distance_tolerance);
+void movef(emp_s_init_parameters::CartesianPoint cPoint);
+
+void getCurPosCallBack (const emp_s_init_parameters::CartesianPoint & pointMsg)
 {
-    
-    MCC_GetCurPos(&dfCurPosX, &dfCurPosY, &dfCurPosZ, 
-					  &dfCurPosU, &dfCurPosV, &dfCurPosW, 
-					  &dfCurPosA, &dfCurPosB, g_nGroupIndex);
-
-	pose_message->position.x = dfCurPosX ; 
-	pose_message->position.y = dfCurPosY;
-	pose_message->position.z = dfCurPosZ;
-
-}*/
-
-void InPositionCallback(const std_msgs::String::ConstPtr& msg)
-{
-  if(msg->data.c_str() == "1")
-  {
-      ROS_INFO("Still moving: [%s]", msg->data.c_str());
-      InPos = 1 ;
-  }
-  else
-  {
-     ROS_INFO("Still moving: [%s]", msg->data.c_str());
-     InPos = 0 ;
-  }
-	
+    turtlesim_pose.x = pointMsg.X;
+    turtlesim_pose.y = pointMsg.Y;
+    turtlesim_pose.theta = 0 ;
+  //	printf("X: %f , Y: %f ", turtlesim_pose.x , turtlesim_pose.y);
 }
-void chatterCallback( emp_s_init_parameters::CartesianPoint msg  )
-{
-  ROS_INFO("Still moving: [%f]", msg.X);  
 
+void inPositionCallback (const std_msgs::Int32 & inPosr)
+{
+   inPos = inPosr.data;
+   //printf("position %d",inPos);
 }
 
 
 
 int main(int argc, char **argv)
 {
-  ros::Publisher line_pub ; 
-// %Tag(INIT)%
-  ros::init(argc, argv, "talker");
-
-  ros::NodeHandle n;
-// %EndTag(NODEHANDLE)%
-
-// %Tag(PUBLISHER)% 
-  ros::Publisher pos_pub = n.advertise<geometry_msgs::Pose>("SetPositionMCCL", 10);
-  //ros::Subscriber get_Curpos_sub = n.subscribe("GetCurPositionMCCL", 5 , GetCurPosCallBack );
-  ros::Subscriber get_InPos_sub = n.subscribe("curcpos_MCCL", 1000, chatterCallback);
-
-  //ros::Subscriber GET = n.subscribe("chatter", 1000, chatterCallback);
-// %EndTag(PUBLISHER)%
-
-// %Tag(LOOP_RATE)%
-  ros::Rate loop_rate(20);
-
-
-
-
-
-
-
-  line_pub = n.advertise<emp_s_init_parameters::CartesianPoint>("line_MCCL", 1, true); 
-    emp_s_init_parameters::CartesianPoint cPoint;
+    ros::init(argc, argv, "use_init_mccl"); //node name
+    ros::NodeHandle nh; // create a node handle; need to pass this to the class constructor
+    line_pub = nh.advertise<emp_s_init_parameters::CartesianPoint>("line_MCCL", 1, true); 
+    velocity_publisher = nh.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel", 1000);
+    cur_pos = nh.subscribe("curcpos_MCCL",100,getCurPosCallBack);
+    in_pos = nh.subscribe("inPositionStatus",100,inPositionCallback);
+    emp_s_init_parameters::CartesianPoint cPoint ; 
+    printf("Test is successfull !\n\n");
+    /** test your code here **/
     ROS_INFO("\n\n\n******START TESTING************\n");
-    cPoint.X = 10 ;
-    cPoint.Z = 10 ;
+    cout<<"enter position X: ";
+    cin>>cPoint.X;
+    cout<<"enter position Y : ";
+    cin>>cPoint.Y;
+    cPoint.Z = 0 ;
     cPoint.RX = 0 ;
     cPoint.RY= 0 ;
     cPoint.RZ = 0 ;
-   // turtlesim::Pose pose;
-   // pose.x=cPoint.X;
-   // pose.y=cPoint.Y;
-   // pose.theta=0;
+    turtlesim::Pose pose;
+    pose.x=cPoint.X;
+    pose.y=cPoint.Y;
+    pose.theta=0;
 
     //line_pub.publish(cPoint);
     //movef(cPoint);
-    line_pub.publish(cPoint);
+      line_pub.publish(cPoint);
+      moveGoal(pose, 0.01);
+  //  ROS_INFO("main: instantiating an object of type ExampleRosClass");
+    //int a = 5;
+    //ROS_MCCL ros_(a);  //instantiate an ExampleRosClass object and pass in pointer to nodehandle for constructor to use
 
-
-
-
-
-
-
-// %EndTag(LOOP_RATE)%
-
-  /**
-   * A count of how many messages we have sent. This is used to create
-   * a unique string for each message.
-   */
-// %Tag(ROS_OK)%
-  /*int count = 0;
-  while (ros::ok())
-  {
-
-    if(InPos == 0)
-    {
-      geometry_msgs::Pose msg;
-      msg.position.x = 5 * double(rand())/double(RAND_MAX);
-      msg.position.y = 10 * double(rand())/double(RAND_MAX);  
-  // %Tag(ROSCONSOLE)%
-      ROS_INFO("pos x : %f", msg.position.x);
-      ROS_INFO("pos y : %f", msg.position.y);
-      pos_pub.publish(msg);
-  // %EndTag(ROSCONSOLE)%
-    }
-   
-// %Tag(PUBLISH)%
-  
-// %EndTag(PUBLISH)%
-
-// %Tag(SPINONCE)%
-    ros::spinOnce();
-// %EndTag(SPINONCE)%
-
-// %Tag(RATE_SLEEP)%
-    loop_rate.sleep();
-// %EndTag(RATE_SLEEP)%
-    ++count;
-  }*/
-
-
-ros::spin();
-  return 0;
+   // ROS_INFO("main: going into spin; let the callbacks do all the work");
+    ros::spin();
+    return 0;
 }
-// %EndTag(FULLTEXT)%
+void movef(emp_s_init_parameters::CartesianPoint cPoint)
+{
+  // printf("move !\n\n");
+  //set a random linear velocity in the x-axis
+ geometry_msgs::Twist vel_msg;
+	vel_msg.linear.x =10;
+	vel_msg.linear.y =0;
+	vel_msg.linear.z =0;
+	//set a random angular velocity in the y-axis
+	vel_msg.angular.x = 0;
+	vel_msg.angular.y = 0;
+	vel_msg.angular.z = 0;
+
+	//set a position desired
+  double t0 = ros::Time::now().toSec();
+  line_pub.publish(cPoint);
+
+	double current_distance = 0.0;
+	ros::Rate loop_rate(1);
+	do{
+		velocity_publisher.publish(vel_msg);
+		double t1 = ros::Time::now().toSec();
+    vel_msg.linear.x = turtlesim_pose.x ;
+    vel_msg.linear.y = turtlesim_pose.y ;
+		ros::spinOnce();
+		loop_rate.sleep();
+		cout<<(t1-t0)<<", "<<"vel:"<<vel_msg.linear.x<<", "<<endl;
+	}while(inPos==0);
+	vel_msg.linear.x =0;
+	velocity_publisher.publish(vel_msg);
+
+}
+/*void poseCallback(const turtlesim::Pose::ConstPtr & pose_message){
+	turtlesim_pose.x=pose_message->x;
+	turtlesim_pose.y=pose_message->y;
+	turtlesim_pose.theta=pose_message->theta;
+}
+*/
+double getDistance(double x1, double y1, double x2, double y2){
+	return sqrt(pow((x1-x2),2)+pow((y1-y2),2));
+}
+
+void moveGoal(turtlesim::Pose  goal_pose, double distance_tolerance){
+
+	geometry_msgs::Twist vel_msg;
+
+	ros::Rate loop_rate(100);
+	double E = 0.0;
+	do{
+		/****** Proportional Controller ******/
+		//linear velocity in the x-axis
+		double Kp=0.5;
+		double Ki=0.02;
+		//double v0 = 2.0;
+		//double alpha = 0.5;
+		double e = getDistance(turtlesim_pose.x, turtlesim_pose.y, goal_pose.x, goal_pose.y);
+		double E = E+e;
+		//Kp = v0 * (exp(-alpha)*error*error)/(error*error);
+		vel_msg.linear.x = (Kp*e);
+		vel_msg.linear.y =0;
+		vel_msg.linear.z =0;
+		//angular velocity in the z-axis
+		vel_msg.angular.x = 0;
+		vel_msg.angular.y = 0;
+		vel_msg.angular.z =4*(atan2(goal_pose.y-turtlesim_pose.y, goal_pose.x-turtlesim_pose.x)-turtlesim_pose.theta);
+
+		velocity_publisher.publish(vel_msg);
+
+		ros::spinOnce();
+		loop_rate.sleep();
+
+	}while(getDistance(turtlesim_pose.x, turtlesim_pose.y, goal_pose.x, goal_pose.y)>distance_tolerance);
+	cout<<"end move goal"<<endl;
+	vel_msg.linear.x =0;
+	vel_msg.angular.z = 0;
+	velocity_publisher.publish(vel_msg);
+}

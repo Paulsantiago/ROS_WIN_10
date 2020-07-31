@@ -145,6 +145,24 @@ void ROS_MCCL::tupdate(const ros::TimerEvent& event)
 
 bool ROS_MCCL::initParameters()
 {
+	
+	//UpdateData(false);
+	//MCC_StartEcServer();
+	Sleep(2000);
+	int nRet = MCC_RtxInit(AXIS_NUM);
+	if(nRet != NO_ERROR_RTX)
+	{
+		if(nRet == ERROR_NO_DOG)
+		{
+			printf("resp %d \n" , nRet);
+		}
+		else if(nRet == ERROR_RTX_INIT_ERROR)
+		{
+			printf("resp %d \n" , nRet);
+		}
+		   ROS_INFO("CONECTION ERROR CLOSING");
+		return false;
+	}
     int resp = MCC_SetSysMaxSpeed(100);//  set max. feed rate
 	printf("resp %d \n" , resp);
      wCardType    = 2;
@@ -159,31 +177,34 @@ bool ROS_MCCL::initParameters()
 	stMacParam.dfLowLimit                = -50000.0; 
 	stMacParam.dfHighLimitOffset         = 0;
 	stMacParam.dfLowLimitOffset          = 0;
-	stMacParam.wPulseMode                = DDA_FMT_PD; 
+	stMacParam.wPulseMode                = 0; 
 	stMacParam.wPulseWidth               = 100; 
 	stMacParam.wCommandMode              = nCommandMode;
 	stMacParam.wOverTravelUpSensorMode   = 2;//  not checking
 	stMacParam.wOverTravelDownSensorMode = 2;
 
 	//  set encoder configures
-	stENCConfig.wType                    = ENC_TYPE_AB;
+	/*stENCConfig.wType                    = ENC_TYPE_AB;
 	stENCConfig.wAInverse                = _NO_;
 	stENCConfig.wBInverse                = _NO_;
 	stENCConfig.wCInverse                = _NO_;
 	stENCConfig.wABSwap                  = _NO_;
 	stENCConfig.wInputRate               = 4;//  set encoder input rate : x4
-
+*/
 
 	//mechanism and ENC parameters are seperated from each other, we set them all the same.
 	for (WORD wChannel = 0;wChannel < AXIS_NUM;wChannel++)
 	{
 		MCC_SetMacParam(&stMacParam, wChannel, CARD_INDEX);      //  mechanism parameters are the same for all axes
-		MCC_SetEncoderConfig(&stENCConfig, wChannel, CARD_INDEX);//  encoder configures are the same for all axes
+		//MCC_SetEncoderConfig(&stENCConfig, wChannel, CARD_INDEX);//  encoder configures are the same for all axes
 	}
     
+	
 	//  set group parameters
 	MCC_CloseAllGroups();
-	g_nGroupIndex = MCC_CreateGroup(0, 1, 2, 3, 4, 5, 6, 7,  CARD_INDEX);
+	g_nGroupIndex = MCC_CreateGroup(0, 1, 2, 3, 4, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, CARD_INDEX);
+    
+	//g_nGroupIndex = MCC_CreateGroup(0, 1, 2, 3, 4, 5, 6, 7,  CARD_INDEX);
 
 	if( g_nGroupIndex < GROUP_VALID )
 	{
@@ -193,7 +214,7 @@ bool ROS_MCCL::initParameters()
 
 	
 	//  stCardConfig is used to set card's base address and card style, and set one card's attributes now
-	stCardConfig[CARD_INDEX].wCardType    = wCardType;   //  2 : 4-axis card
+	stCardConfig[CARD_INDEX].wCardType    = EMP_MULTI_AXES;   //  2 : 4-axis card
 								                         //  3 : 6-axis card
 								                         //  4 : 8-axis card
 
@@ -201,16 +222,16 @@ bool ROS_MCCL::initParameters()
 	stCardConfig[CARD_INDEX].wIRQ_No      = IRQ_NO;      //  IRQ No., PCI card ignores this setting
 	stCardConfig[CARD_INDEX].wPaddle      = 0;
     // INIT
-	nRet = MCC_InitSimulation(INTERPOLATION_TIME,// set interpolation time interval and get some errors happening or not
+	nRet = MCC_InitSystem(INTERPOLATION_TIME,// set interpolation time interval and get some errors happening or not
 						  stCardConfig,
 						  1);		         //  only use one card
-	printf(" \n  MCC_InitSimulation !  Return Value : %d", nRet);
+	printf(" \n  MCC_InitSystem !  Return Value : %d", nRet);
 
 	if (nRet == NO_ERR)
 	{
 		printf("  Initialization is successfull initVal  = %d !\n\n" , nRet );
-		//MCC_SetServoOn(0, CARD_INDEX);//  set channel 0 servv on 
-		//MCC_SetServoOn(1, CARD_INDEX);//  set channel 1 servv on 
+		for(int i = 0 ; i<AXIS_NUM ; i++)
+		MCC_SetServoOn(i,0);
 
 		MCC_SetAbsolute(g_nGroupIndex);     //  use Absolute coordinate mode
 		//  you must regulate accleration and deceleration time depending on different speed for a smooth moving		
@@ -220,11 +241,18 @@ bool ROS_MCCL::initParameters()
 		MCC_SetDecTime(300, g_nGroupIndex);//  set decleration time to be 300 ms
 
 		MCC_SetFeedSpeed(10, g_nGroupIndex);//  set line, arc and circle motion's feed rate (unit : mm/sec)
-
+		
+		MCC_Line(20, 10, 0, 0, 0, 0, 0, 0, g_nGroupIndex);
         return true;
 	}
 	else
 	{
+			printf("Motion Initialization Error !\n\n");
+			for(int i = 0 ; i<AXIS_NUM ; i++)
+			MCC_SetServoOff(i,0);
+
+  			MCC_CloseSystem();
+			
 		printf("Motion Initialization Error , initError  = %d  !\n\n", nRet);
 		return false;									  
 	}
@@ -249,7 +277,7 @@ int main (int argc, char **argv)
     
 	ROS_MCCL exampleRosClassMCCL(&nh);  //instantiate an ExampleRosClass object and pass in pointer to nodehandle for constructor to use
 	
-	ros::Publisher chatter_publisher = nh.advertise<emp_s_init_parameters::CartesianPoint>("chatter",1000);
+	/*ros::Publisher chatter_publisher = nh.advertise<emp_s_init_parameters::CartesianPoint>("chatter",1000);
 	ros::Rate loop_rate(1.0);
 	
 	///ros::Timer timer = nh.createTimer(ros::Duration(0.016), boost::bind(timerCallback, _1, exampleRosClassMCCL));
@@ -264,10 +292,10 @@ int main (int argc, char **argv)
 	tpoint.RY = 0;
 	tpoint.RZ = 0;
 	chatter_publisher.publish(tpoint);
-	ROS_INFO(" Puvlishing" );
+	ROS_INFO(" Publishing" );
 	ros::spinOnce();
 	loop_rate.sleep();
-	}
+	}*/
 
 	
 	

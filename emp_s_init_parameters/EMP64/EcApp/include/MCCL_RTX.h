@@ -37,11 +37,7 @@ MCC_API int MCC_CALL MCC_RtxClose();
 MCC_API void   MCC_CALL MCC_GetVersion(TCHAR *strVersion);
 
 // Create/Close Motion Groups
-//MCC_API int    MCC_CALL MCC_CreateGroup(int xMapToCh, int yMapToCh, int zMapToCh, int uMapToCh, int vMapToCh, int wMapToCh, int aMapToCh, int bMapToCh, int nCardIndex);
-MCC_API int MCC_CreateGroup(int xMapToCh, int yMapToCh, int zMapToCh, int uMapToCh, int vMapToCh, int wMapToCh, int aMapToCh, int bMapToCh,
-                                                 int x1MapToCh, int y1MapToCh, int z1MapToCh, int u1MapToCh, int v1MapToCh, int w1MapToCh, int a1MapToCh, int b1MapToCh, int nCardIndex);
-
-
+MCC_API int    MCC_CALL MCC_CreateGroup(int xMapToCh, int yMapToCh, int zMapToCh, int uMapToCh, int vMapToCh, int wMapToCh, int aMapToCh, int bMapToCh, int nCardIndex);
 MCC_API int    MCC_CALL MCC_CreateGroupEx(int xMapToCh, int yMapToCh, int zMapToCh, int uMapToCh, int vMapToCh, int wMapToCh, int aMapToCh, int bMapToCh, int nCardIndex, int nMotionQueueSize = MOTION_QUEUE_SIZE);
 MCC_API int    MCC_CALL MCC_CloseGroup(int nGroupIndex);
 MCC_API int    MCC_CALL MCC_CloseAllGroups();

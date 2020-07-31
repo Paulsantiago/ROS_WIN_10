@@ -62,7 +62,7 @@
 #define _NO_                            0
 	
 
-#define NO_ERROR_RTX							0
+#define NO_ERROR							0
 #define ERROR_NO_DOG						1
 #define ERROR_RTX_INIT_ERROR				2
 #define	MCC_VERSION						"EC V1.0"
